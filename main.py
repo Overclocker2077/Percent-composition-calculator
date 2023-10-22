@@ -153,5 +153,5 @@ a = compound_formula_parser("MgCO3")
 print(calculate_percent_composition(a))
 a = compound_formula_parser("Cu(OH)2")
 print(calculate_percent_composition(a))
-# compound_formula_parser("Al(C2H3O2)3")  // Doesn't work with distribution 
+# compound_formula_parser("Al(C2H3O2)3")  // WIP  - Doesn't work with distribution 
 
