@@ -1,5 +1,3 @@
-import re
-
 # element key : paired with atomic mass
 periodicTable_atomic = {
     "H": 1.00797,
@@ -115,55 +113,45 @@ periodicTable_atomic = {
     "Uuu": 272,
     "Uub": 277
 }
+
+alphabet_list = list('abcdefghijklmnopqrstuvwxyz'.upper())
+
+def check_if_upper(letter):
+    if letter in alphabet_list:
+        return True
+    return False
+
+def num_of_atoms(string):
+    for i in range(len(string)):
+        if string[i].isnumeric(): 
+            return string.strip(string[i]), int(string[i])
+    return string, 1
+        
 def compound_formula_parser(formula):
+    formula_list = list(formula)
     elements_and_total_atoms = {}
-    current_element = ""
-    current_count = 0
-
-    i = 0
-    while i < len(formula):
-        char = formula[i]
-
-        if char.isupper():
-            if current_element:
-                elements_and_total_atoms[current_element] = current_count if current_count else 1
-            current_element = char
-            current_count = 0
-        elif char.islower():
-            current_element += char
-        elif char.isnumeric():
-            count_str = char
-            while i + 1 < len(formula) and formula[i + 1].isnumeric():
-                i += 1
-                count_str += formula[i]
-            current_count = int(count_str)
-        elif char == '(':
-            j = i + 1
-            while j < len(formula) and formula[j] != ')':
-                j += 1
-            sub_formula = formula[i + 1:j]
-            i = j
-            sub_elements = compound_formula_parser(sub_formula)
-            count_str = ""
-            while j + 1 < len(formula) and formula[j + 1].isnumeric():
-                j += 1
-                count_str += formula[j]
-            count = int(count_str) if count_str else 1
-            for element, sub_count in sub_elements.items():
-                elements_and_total_atoms[element] = elements_and_total_atoms.get(element, 0) + sub_count * count
-        i += 1
-
-    if current_element:
-        elements_and_total_atoms[current_element] = current_count if current_count else 1
-
+    list_of_indexes = []
+    for i in range(len(formula_list)):
+        if check_if_upper(formula_list[i]):
+            list_of_indexes.append(i)
+    element_list = ["".join(formula_list[list_of_indexes[i]:list_of_indexes[i+1]]) if i != len(list_of_indexes)-1 
+         else "".join(formula_list[list_of_indexes[i]:]) for i in range(len(list_of_indexes))]
+    for i in element_list:
+        symbol, num = num_of_atoms(i)
+        elements_and_total_atoms[symbol] = num
     return elements_and_total_atoms
 
-def calculate_percent_composition(formula):
-    elements_and_total_atoms = compound_formula_parser(formula)
-    total_atomic_mass = sum(periodicTable_atomic[element] * count for element, count in elements_and_total_atoms.items())
-    percent_composition = {element: (periodicTable_atomic[element] * count / total_atomic_mass) * 100 for element, count in elements_and_total_atoms.items()}
+def calculate_percent_composition(elements_and_total_atoms):
+    total_atomic_mass = 0
+    percent_composition = {}
+    for element, num_of_atoms in elements_and_total_atoms.items(): total_atomic_mass += periodicTable_atomic[element]*num_of_atoms
+    for element, num_of_atoms in elements_and_total_atoms.items(): 
+        percent_composition[element] = (periodicTable_atomic[element]*num_of_atoms/total_atomic_mass)*100
     return percent_composition
 
-formula = input("Enter a chemical formula: ")
-result = calculate_percent_composition(formula)
-print(result)
+a = compound_formula_parser("MgCO3")
+print(calculate_percent_composition(a))
+a = compound_formula_parser("Cu(OH)2")
+print(calculate_percent_composition(a))
+# compound_formula_parser("Al(C2H3O2)3")  // Doesn't work with distribution 
+
