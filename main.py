@@ -124,7 +124,7 @@ def check_if_upper(letter):
 def num_of_atoms(string):
     for i in range(len(string)):
         if string[i].isnumeric(): 
-            return string.strip(string[i]), int(string[i])
+            return string.strip(string[i:]), int(string[i:])
     return string, 1
         
 def compound_formula_parser(formula):
@@ -149,9 +149,10 @@ def calculate_percent_composition(elements_and_total_atoms):
         percent_composition[element] = (periodicTable_atomic[element]*num_of_atoms/total_atomic_mass)*100
     return percent_composition
 
-a = compound_formula_parser("MgCO3")
+a = compound_formula_parser(input())
 print(calculate_percent_composition(a))
-a = compound_formula_parser("Cu(OH)2")
-print(calculate_percent_composition(a))
-# compound_formula_parser("Al(C2H3O2)3")  // WIP  - Doesn't work with distribution 
+
+# a = compound_formula_parser("Cu(OH)2")
+# print(calculate_percent_composition(a))
+# compound_formula_parser("Al(C2H3O2)3")  // Doesn't work with distribution 
 
