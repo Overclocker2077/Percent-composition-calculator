@@ -117,9 +117,7 @@ periodicTable_atomic = {
 alphabet_list = list('abcdefghijklmnopqrstuvwxyz'.upper())
 
 def check_if_upper(letter):
-    if letter in alphabet_list:
-        return True
-    return False
+    return letter in alphabet_list
 
 def num_of_atoms(string):
     for i in range(len(string)):
